@@ -8,22 +8,25 @@ class WidgetItemNews extends StatelessWidget {
   final ItemArticleTopHeadlinesNewsResponseModel itemArticle;
   final String strPublishedAt;
 
-  WidgetItemNews({
-    @required this.itemArticle,
-    @required this.strPublishedAt,
+  const WidgetItemNews({
+    super.key,
+    required this.itemArticle,
+    required this.strPublishedAt,
   });
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context);
     return GestureDetector(
       onTap: () async {
-        if (await canLaunch(itemArticle.url)) {
-          await launch(itemArticle.url);
+        final uri = Uri.tryParse(itemArticle.url);
+        if (uri != null && await canLaunchUrl(uri)) {
+          await launchUrl(uri);
         } else {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('Couldn\'t open detail news'),
-          ));
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Couldn\'t open detail news'),
+            ));
+          }
         }
       },
       child: SizedBox(
@@ -77,10 +80,10 @@ class WidgetItemNews extends StatelessWidget {
                       ),
                     ),
                   ),
-                  itemArticle.author == null
+                  itemArticle.author == null || itemArticle.author!.isEmpty
                       ? Container()
                       : Text(
-                          itemArticle.author,
+                          itemArticle.author!,
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 28.sp,

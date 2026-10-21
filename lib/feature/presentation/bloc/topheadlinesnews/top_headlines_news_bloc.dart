@@ -1,10 +1,7 @@
-import 'dart:async';
-
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_news_app/core/error/failure.dart';
 import 'package:flutter_news_app/feature/domain/usecase/gettopheadlinesnews/get_top_headlines_news.dart';
 import 'package:flutter_news_app/feature/domain/usecase/searchtopheadlinesnews/search_top_headlines_news.dart';
-import 'package:meta/meta.dart';
 
 import './bloc.dart';
 
@@ -13,62 +10,54 @@ class TopHeadlinesNewsBloc extends Bloc<TopHeadlinesNewsEvent, TopHeadlinesNewsS
   final SearchTopHeadlinesNews searchTopHeadlinesNews;
 
   TopHeadlinesNewsBloc({
-    @required this.getTopHeadlinesNews,
-    @required this.searchTopHeadlinesNews,
-  })  : assert(getTopHeadlinesNews != null),
-        assert(searchTopHeadlinesNews != null);
-
-  @override
-  TopHeadlinesNewsState get initialState => InitialTopHeadlinesNewsState();
-
-  @override
-  Stream<TopHeadlinesNewsState> mapEventToState(
-    TopHeadlinesNewsEvent event,
-  ) async* {
-    if (event is LoadTopHeadlinesNewsEvent) {
-      yield* _mapLoadTopHeadlinesNewsEventToState(event);
-    } else if (event is ChangeCategoryTopHeadlinesNewsEvent) {
-      yield* _mapChangeCategoryTopHeadlinesNewsEventToState(event);
-    } else if (event is SearchTopHeadlinesNewsEvent) {
-      yield* _mapSearchTopHeadlinesNewsEventToState(event);
-    }
+    required this.getTopHeadlinesNews,
+    required this.searchTopHeadlinesNews,
+  }) : super(InitialTopHeadlinesNewsState()) {
+    on<LoadTopHeadlinesNewsEvent>(_onLoadTopHeadlinesNews);
+    on<ChangeCategoryTopHeadlinesNewsEvent>(_onChangeCategoryTopHeadlinesNews);
+    on<SearchTopHeadlinesNewsEvent>(_onSearchTopHeadlinesNews);
   }
 
-  Stream<TopHeadlinesNewsState> _mapLoadTopHeadlinesNewsEventToState(LoadTopHeadlinesNewsEvent event) async* {
-    yield LoadingTopHeadlinesNewsState();
-    var response = await getTopHeadlinesNews(ParamsGetTopHeadlinesNews(category: event.category));
-    yield response.fold(
-      // ignore: missing_return
+  Future<void> _onLoadTopHeadlinesNews(
+    LoadTopHeadlinesNewsEvent event,
+    Emitter<TopHeadlinesNewsState> emit,
+  ) async {
+    emit(LoadingTopHeadlinesNewsState());
+    final response = await getTopHeadlinesNews(ParamsGetTopHeadlinesNews(category: event.category));
+    response.fold(
       (failure) {
         if (failure is ServerFailure) {
-          return FailureTopHeadlinesNewsState(errorMessage: failure.errorMessage);
+          emit(FailureTopHeadlinesNewsState(errorMessage: failure.errorMessage));
         } else if (failure is ConnectionFailure) {
-          return FailureTopHeadlinesNewsState(errorMessage: failure.errorMessage);
+          emit(FailureTopHeadlinesNewsState(errorMessage: failure.errorMessage));
         }
       },
-      (data) => LoadedTopHeadlinesNewsState(listArticles: data.articles),
+      (data) => emit(LoadedTopHeadlinesNewsState(listArticles: data.articles)),
     );
   }
 
-  Stream<TopHeadlinesNewsState> _mapChangeCategoryTopHeadlinesNewsEventToState(
+  void _onChangeCategoryTopHeadlinesNews(
     ChangeCategoryTopHeadlinesNewsEvent event,
-  ) async* {
-    yield ChangedCategoryTopHeadlinesNewsState(indexCategorySelected: event.indexCategorySelected);
+    Emitter<TopHeadlinesNewsState> emit,
+  ) {
+    emit(ChangedCategoryTopHeadlinesNewsState(indexCategorySelected: event.indexCategorySelected));
   }
 
-  Stream<TopHeadlinesNewsState> _mapSearchTopHeadlinesNewsEventToState(SearchTopHeadlinesNewsEvent event) async* {
-    yield LoadingTopHeadlinesNewsState();
-    var result = await searchTopHeadlinesNews(ParamsSearchTopHeadlinesNews(keyword: event.keyword));
-    yield result.fold(
-      // ignore: missing_return
+  Future<void> _onSearchTopHeadlinesNews(
+    SearchTopHeadlinesNewsEvent event,
+    Emitter<TopHeadlinesNewsState> emit,
+  ) async {
+    emit(LoadingTopHeadlinesNewsState());
+    final result = await searchTopHeadlinesNews(ParamsSearchTopHeadlinesNews(keyword: event.keyword));
+    result.fold(
       (failure) {
         if (failure is ServerFailure) {
-          return FailureTopHeadlinesNewsState(errorMessage: failure.errorMessage);
+          emit(FailureTopHeadlinesNewsState(errorMessage: failure.errorMessage));
         } else if (failure is ConnectionFailure) {
-          return FailureTopHeadlinesNewsState(errorMessage: failure.errorMessage);
+          emit(FailureTopHeadlinesNewsState(errorMessage: failure.errorMessage));
         }
       },
-      (response) => SearchSuccessTopHeadlinesNewsState(listArticles: response.articles),
+      (response) => emit(SearchSuccessTopHeadlinesNewsState(listArticles: response.articles)),
     );
   }
 }

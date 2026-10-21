@@ -1,4 +1,4 @@
 class BaseUrlConfig {
-  final String baseUrlDevelopment = 'https://bengkelrobot.net:8003';
-  final String baseUrlProduction = 'https://newsapi.org';
+  final String baseUrlDevelopment = 'https://news.google.com';
+  final String baseUrlProduction = 'https://news.google.com';
 }

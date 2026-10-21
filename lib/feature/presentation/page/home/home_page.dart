@@ -13,19 +13,20 @@ import 'package:flutter_news_app/feature/presentation/widget/widget_failure_mess
 import 'package:flutter_news_app/feature/presentation/widget/widget_item_news.dart';
 import 'package:flutter_news_app/injection_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   final topHeadlinesNewsBloc = sl<TopHeadlinesNewsBloc>();
-  final listCategories = <CategoryNewsModel>[
+  final listCategories = const <CategoryNewsModel>[
     CategoryNewsModel(image: '', title: 'All'),
     CategoryNewsModel(image: 'assets/images/img_business.png', title: 'Business'),
     CategoryNewsModel(image: 'assets/images/img_entertainment.png', title: 'Entertainment'),
@@ -37,8 +38,8 @@ class _HomePageState extends State<HomePage> {
   final refreshIndicatorState = GlobalKey<RefreshIndicatorState>();
 
   bool isLoadingCenterIOS = false;
-  Completer completerRefresh;
-  var indexCategorySelected = 0;
+  Completer<void>? completerRefresh;
+  int indexCategorySelected = 0;
 
   @override
   void initState() {
@@ -49,8 +50,8 @@ class _HomePageState extends State<HomePage> {
           LoadTopHeadlinesNewsEvent(category: listCategories[indexCategorySelected].title.toLowerCase()),
         );
       } else {
-        completerRefresh = Completer();
-        refreshIndicatorState.currentState.show();
+        completerRefresh = Completer<void>();
+        refreshIndicatorState.currentState?.show();
       }
     });
     super.initState();
@@ -58,7 +59,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context);
     return Scaffold(
       body: BlocProvider<TopHeadlinesNewsBloc>(
         create: (context) => topHeadlinesNewsBloc,
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                 var category = listCategories[indexCategorySelected].title.toLowerCase();
                 topHeadlinesNewsBloc.add(LoadTopHeadlinesNewsEvent(category: category));
               } else {
-                refreshIndicatorState.currentState.show();
+                refreshIndicatorState.currentState?.show();
               }
             }
           },
@@ -88,12 +88,12 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     width: double.infinity,
                     height: double.infinity,
-                    color: isDarkMode ? null : Color(0xFFEFF5F5),
+                    color: isDarkMode ? null : const Color(0xFFEFF5F5),
                   ),
                   SafeArea(
                     child: Container(
                       width: double.infinity,
-                      color: isDarkMode ? null : Color(0xFFEFF5F5),
+                      color: isDarkMode ? null : const Color(0xFFEFF5F5),
                       padding: EdgeInsets.symmetric(
                         vertical: 24.h,
                       ),
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                                   onTap: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => SearchPage()),
+                                      MaterialPageRoute(builder: (context) => const SearchPage()),
                                     );
                                   },
                                   child: Hero(
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => SettingsPage(),
+                                        builder: (context) => const SettingsPage(),
                                       ),
                                     );
                                   },
@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                           ),
-                          WidgetDateToday(),
+                          const WidgetDateToday(),
                           SizedBox(height: 24.h),
                           WidgetCategoryNews(
                               listCategories: listCategories, indexDefaultSelected: indexCategorySelected),
@@ -170,8 +170,10 @@ class _HomePageState extends State<HomePage> {
     if (isLoadingCenterIOS) {
       isLoadingCenterIOS = false;
     }
-    completerRefresh?.complete();
-    completerRefresh = Completer();
+    if (completerRefresh?.isCompleted == false) {
+      completerRefresh?.complete();
+    }
+    completerRefresh = Completer<void>();
   }
 
   Widget _buildWidgetContentNewsIOS() {
@@ -181,7 +183,7 @@ class _HomePageState extends State<HomePage> {
         if (state is LoadedTopHeadlinesNewsState) {
           listArticles.addAll(state.listArticles);
         } else if (isLoadingCenterIOS) {
-          return Center(
+          return const Center(
             child: CupertinoActivityIndicator(),
           );
         }
@@ -190,7 +192,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 48.w),
               child: CustomScrollView(
-                physics: BouncingScrollPhysics(
+                physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
                 ),
                 slivers: <Widget>[
@@ -199,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                       topHeadlinesNewsBloc.add(
                         LoadTopHeadlinesNewsEvent(category: listCategories[indexCategorySelected].title.toLowerCase()),
                       );
-                      return completerRefresh.future;
+                      return completerRefresh?.future ?? Future.value();
                     },
                   ),
                   SliverList(
@@ -245,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                 topHeadlinesNewsBloc.add(
                   LoadTopHeadlinesNewsEvent(category: listCategories[indexCategorySelected].title.toLowerCase()),
                 );
-                return completerRefresh.future;
+                return completerRefresh?.future ?? Future.value();
               },
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 48.w),
@@ -274,8 +276,11 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          WidgetFailureMessage(),
-          RaisedButton(
+          const WidgetFailureMessage(),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey[700],
+            ),
             onPressed: () {
               if (Platform.isIOS) {
                 isLoadingCenterIOS = true;
@@ -283,7 +288,7 @@ class _HomePageState extends State<HomePage> {
                   LoadTopHeadlinesNewsEvent(category: listCategories[indexCategorySelected].title.toLowerCase()),
                 );
               } else {
-                refreshIndicatorState.currentState.show();
+                refreshIndicatorState.currentState?.show();
               }
             },
             child: Text(
@@ -293,7 +298,6 @@ class _HomePageState extends State<HomePage> {
                 fontSize: 36.sp,
               ),
             ),
-            color: Colors.grey[700],
           ),
         ],
       ),
@@ -323,17 +327,19 @@ class _HomePageState extends State<HomePage> {
   ) {
     return GestureDetector(
       onTap: () async {
-        if (await canLaunch(itemArticle.url)) {
-          await launch(itemArticle.url);
+        final uri = Uri.tryParse(itemArticle.url);
+        if (uri != null && await canLaunchUrl(uri)) {
+          await launchUrl(uri);
         } else {
-          Scaffold.of(context).showSnackBar(SnackBar(
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Couldn\'t open detail news'),
           ));
         }
       },
       child: Container(
         width: double.infinity,
-        height: ScreenUtil.screenWidthDp / 1.7,
+        height: 1.sw / 1.7,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
           image: DecorationImage(
@@ -347,7 +353,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Container(
               width: double.infinity,
-              height: ScreenUtil.screenWidthDp / 1.7,
+              height: 1.sw / 1.7,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
                 gradient: LinearGradient(
@@ -355,9 +361,9 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.topCenter,
                   colors: [
                     Colors.black,
-                    Colors.black.withOpacity(0.0),
+                    Colors.black.withValues(alpha: 0.0),
                   ],
-                  stops: [
+                  stops: const [
                     0.0,
                     1.0,
                   ],
@@ -368,30 +374,14 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.pink,
-                      borderRadius: BorderRadius.circular(48),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 28.w,
-                      vertical: 14.w,
-                    ),
-                    child: Text(
-                      'Latest News',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
                   Text(
                     itemArticle.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
+                      fontSize: 48.sp,
                       color: Colors.white,
-                      fontSize: 42.sp,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Row(
@@ -400,22 +390,22 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         strPublishedAt,
                         style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 24.sp,
+                          fontSize: 28.sp,
+                          color: Colors.white,
                         ),
                       ),
                       Text(
                         ' | ',
                         style: TextStyle(
-                          color: Colors.grey,
                           fontSize: 28.sp,
+                          color: Colors.white,
                         ),
                       ),
                       Text(
                         itemArticle.source.name,
                         style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 24.sp,
+                          fontSize: 28.sp,
+                          color: Colors.white,
                         ),
                       ),
                     ],
@@ -434,17 +424,18 @@ class WidgetCategoryNews extends StatefulWidget {
   final List<CategoryNewsModel> listCategories;
   final int indexDefaultSelected;
 
-  WidgetCategoryNews({
-    @required this.listCategories,
-    @required this.indexDefaultSelected,
+  const WidgetCategoryNews({
+    super.key,
+    required this.listCategories,
+    required this.indexDefaultSelected,
   });
 
   @override
-  _WidgetCategoryNewsState createState() => _WidgetCategoryNewsState();
+  State<WidgetCategoryNews> createState() => _WidgetCategoryNewsState();
 }
 
 class _WidgetCategoryNewsState extends State<WidgetCategoryNews> {
-  int indexCategorySelected;
+  int indexCategorySelected = 0;
 
   @override
   void initState() {
@@ -478,14 +469,28 @@ class _WidgetCategoryNewsState extends State<WidgetCategoryNews> {
                 );
               },
               child: Container(
+                decoration: BoxDecoration(
+                  color: itemCategory.title.toLowerCase() == 'all' ? const Color(0xFFBBCDDC) : null,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(4),
+                  ),
+                  image: itemCategory.title.toLowerCase() == 'all'
+                      ? null
+                      : DecorationImage(
+                          image: AssetImage(
+                            itemCategory.image,
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                ),
                 child: AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 200),
                   padding: EdgeInsets.symmetric(
                     horizontal: itemCategory.title.toLowerCase() == 'all' ? 48.w : 32.w,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(indexCategorySelected == index ? 0.2 : 0.6),
-                    borderRadius: BorderRadius.all(
+                    color: Colors.black.withValues(alpha: indexCategorySelected == index ? 0.2 : 0.6),
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(4),
                     ),
                     border: indexCategorySelected == index
@@ -498,23 +503,9 @@ class _WidgetCategoryNewsState extends State<WidgetCategoryNews> {
                   child: Center(
                     child: Text(
                       itemCategory.title,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
-                ),
-                decoration: BoxDecoration(
-                  color: itemCategory.title.toLowerCase() == 'all' ? Color(0xFFBBCDDC) : null,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
-                  ),
-                  image: itemCategory.title.toLowerCase() == 'all'
-                      ? null
-                      : DecorationImage(
-                          image: AssetImage(
-                            itemCategory.image,
-                          ),
-                          fit: BoxFit.cover,
-                        ),
                 ),
               ),
             ),
@@ -527,12 +518,14 @@ class _WidgetCategoryNewsState extends State<WidgetCategoryNews> {
 }
 
 class WidgetDateToday extends StatefulWidget {
+  const WidgetDateToday({super.key});
+
   @override
-  _WidgetDateTodayState createState() => _WidgetDateTodayState();
+  State<WidgetDateToday> createState() => _WidgetDateTodayState();
 }
 
 class _WidgetDateTodayState extends State<WidgetDateToday> {
-  String strToday;
+  String strToday = '';
 
   @override
   void initState() {

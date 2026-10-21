@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context);
     return Scaffold(
-      appBar: WidgetAppBar(),
+      appBar: const WidgetAppBar(),
       body: Container(
         width: double.infinity,
         padding: EdgeInsets.all(48.w),
@@ -56,8 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     return Switch(
                       value: isDarkMode,
                       onChanged: (value) async {
-                        isDarkMode = value;
-                        await box.put('darkMode', isDarkMode);
+                        await box.put('darkMode', value);
                       },
                     );
                   },
@@ -71,26 +70,16 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
-class WidgetAppBar extends PreferredSize {
+class WidgetAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const WidgetAppBar({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: Hive.box('settings').listenable(),
-      builder: (context, box, widget) {
-        var isDarkMode = box.get('darkMode') ?? false;
-        return isDarkMode
-            ? AppBar(
-                title: Text('Settings'),
-              )
-            : AppBar(
-                title: Text('Settings'),
-              );
-      },
+    return AppBar(
+      title: const Text('Settings'),
     );
   }
 
   @override
-  Size get preferredSize {
-    return Size.fromHeight(kToolbarHeight);
-  }
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

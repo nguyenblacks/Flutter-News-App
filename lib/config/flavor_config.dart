@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 enum Flavor {
-  DEVELOPMENT,
-  PRODUCTION,
+  development,
+  production,
 }
 
 class FlavorValues {
   final String baseUrl;
 
-  FlavorValues({this.baseUrl});
+  FlavorValues({required this.baseUrl});
 }
 
 class FlavorConfig {
@@ -21,15 +20,15 @@ class FlavorConfig {
   final Color colorAccent;
   final FlavorValues values;
 
-  static FlavorConfig _instance;
+  static FlavorConfig? _instance;
 
   factory FlavorConfig({
-    @required Flavor flavor,
+    required Flavor flavor,
     Color colorPrimary = Colors.blue,
     Color colorPrimaryDark = Colors.blue,
     Color colorPrimaryLight = Colors.blue,
     Color colorAccent = Colors.blueAccent,
-    @required FlavorValues values,
+    required FlavorValues values,
   }) {
     _instance ??= FlavorConfig._internal(
       flavor,
@@ -40,7 +39,7 @@ class FlavorConfig {
       colorAccent,
       values,
     );
-    return _instance;
+    return _instance!;
   }
 
   FlavorConfig._internal(
@@ -54,7 +53,7 @@ class FlavorConfig {
   );
 
   static FlavorConfig get instance {
-    return _instance;
+    return _instance!;
   }
 
   static String enumName(String enumToString) {
@@ -62,7 +61,7 @@ class FlavorConfig {
     return paths[paths.length - 1];
   }
 
-  static bool isProduction() => _instance.flavor == Flavor.PRODUCTION;
+  static bool isProduction() => _instance?.flavor == Flavor.production;
 
-  static bool isDevelopment() => _instance.flavor == Flavor.DEVELOPMENT;
+  static bool isDevelopment() => _instance?.flavor == Flavor.development;
 }

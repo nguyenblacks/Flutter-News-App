@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 abstract class TopHeadlinesNewsEvent extends Equatable {
   const TopHeadlinesNewsEvent();
@@ -8,10 +7,10 @@ abstract class TopHeadlinesNewsEvent extends Equatable {
 class LoadTopHeadlinesNewsEvent extends TopHeadlinesNewsEvent {
   final String category;
 
-  LoadTopHeadlinesNewsEvent({@required this.category});
+  const LoadTopHeadlinesNewsEvent({required this.category});
 
   @override
-  List<Object> get props => [category];
+  List<Object?> get props => [category];
 
   @override
   String toString() {
@@ -22,10 +21,10 @@ class LoadTopHeadlinesNewsEvent extends TopHeadlinesNewsEvent {
 class ChangeCategoryTopHeadlinesNewsEvent extends TopHeadlinesNewsEvent {
   final int indexCategorySelected;
 
-  ChangeCategoryTopHeadlinesNewsEvent({@required this.indexCategorySelected});
+  const ChangeCategoryTopHeadlinesNewsEvent({required this.indexCategorySelected});
 
   @override
-  List<Object> get props => [indexCategorySelected];
+  List<Object?> get props => [indexCategorySelected];
 
   @override
   String toString() {
@@ -36,10 +35,10 @@ class ChangeCategoryTopHeadlinesNewsEvent extends TopHeadlinesNewsEvent {
 class SearchTopHeadlinesNewsEvent extends TopHeadlinesNewsEvent {
   final String keyword;
 
-  SearchTopHeadlinesNewsEvent({@required this.keyword});
+  const SearchTopHeadlinesNewsEvent({required this.keyword});
 
   @override
-  List<Object> get props => [keyword];
+  List<Object?> get props => [keyword];
 
   @override
   String toString() {

@@ -6,22 +6,22 @@ class WidgetFailureMessage extends StatelessWidget {
   final String errorTitle;
   final String errorSubtitle;
 
-  WidgetFailureMessage({
+  const WidgetFailureMessage({
+    super.key,
     this.errorTitle = 'You seem to be offline',
     this.errorSubtitle = 'Check your wi-fi connection or cellular data \nand try again.',
   });
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         SvgPicture.asset(
           'assets/svg/undraw_newspaper.svg',
-          width: ScreenUtil.screenWidthDp / 3,
-          height: ScreenUtil.screenWidthDp / 3,
+          width: 1.sw / 3,
+          height: 1.sw / 3,
         ),
         SizedBox(height: 24.h),
         Text(

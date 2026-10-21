@@ -12,20 +12,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
-  _SearchPageState createState() => _SearchPageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
   final topHeadlinesNewsBloc = sl<TopHeadlinesNewsBloc>();
   final controllerKeyword = TextEditingController();
   final focusNodeIconSearch = FocusNode();
-  String keyword;
-  Timer debounce;
+  String keyword = '';
+  Timer? debounce;
 
   @override
   void initState() {
-    keyword = '';
     controllerKeyword.addListener(_onSearching);
     super.initState();
   }
@@ -41,7 +42,6 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context);
     var theme = Theme.of(context);
     var isDarkTheme = theme.brightness == Brightness.dark;
     return Scaffold(
@@ -52,11 +52,11 @@ class _SearchPageState extends State<SearchPage> {
             Container(
               width: double.infinity,
               height: double.infinity,
-              color: isDarkTheme ? null : Color(0xFFEFF5F5),
+              color: isDarkTheme ? null : const Color(0xFFEFF5F5),
             ),
             SafeArea(
               child: Container(
-                color: isDarkTheme ? null : Color(0xFFEFF5F5),
+                color: isDarkTheme ? null : const Color(0xFFEFF5F5),
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(
                   vertical: 24.h,
@@ -124,14 +124,14 @@ class _SearchPageState extends State<SearchPage> {
                         builder: (context, state) {
                           if (state is LoadingTopHeadlinesNewsState) {
                             return Center(
-                              child: Platform.isIOS ? CupertinoActivityIndicator() : CircularProgressIndicator(),
+                              child: Platform.isIOS ? const CupertinoActivityIndicator() : const CircularProgressIndicator(),
                             );
                           } else if (state is FailureTopHeadlinesNewsState) {
-                            return WidgetFailureMessage();
+                            return const WidgetFailureMessage();
                           } else if (state is SearchSuccessTopHeadlinesNewsState) {
                             var listArticles = state.listArticles;
                             if (listArticles.isEmpty) {
-                              return WidgetFailureMessage(
+                              return const WidgetFailureMessage(
                                 errorTitle: 'Data not found',
                                 errorSubtitle: 'Hm, we couldn\'t find what you were looking for.',
                               );
@@ -141,7 +141,7 @@ class _SearchPageState extends State<SearchPage> {
                                 itemBuilder: (context, index) {
                                   var itemArticle = listArticles[index];
                                   var dateTimePublishedAt =
-                                      DateFormat('yyy-MM-ddTHH:mm:ssZ').parse(itemArticle.publishedAt, true);
+                                      DateFormat('yyyy-MM-ddTHH:mm:ssZ').parse(itemArticle.publishedAt, true);
                                   var strPublishedAt = DateFormat('MMM dd, yyyy HH:mm').format(dateTimePublishedAt);
                                   return Padding(
                                     padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -171,16 +171,16 @@ class _SearchPageState extends State<SearchPage> {
 
   void _onSearching() {
     if (debounce?.isActive ?? false) {
-      debounce.cancel();
+      debounce?.cancel();
     }
-    debounce = Timer(Duration(milliseconds: 800), () {
-      var keyword = controllerKeyword.text.trim();
-      if (keyword.isEmpty || this.keyword == keyword) {
+    debounce = Timer(const Duration(milliseconds: 800), () {
+      var currentKeyword = controllerKeyword.text.trim();
+      if (currentKeyword.isEmpty || keyword == currentKeyword) {
         return;
       }
-      this.keyword = keyword;
+      keyword = currentKeyword;
       focusNodeIconSearch.requestFocus();
-      topHeadlinesNewsBloc.add(SearchTopHeadlinesNewsEvent(keyword: keyword));
+      topHeadlinesNewsBloc.add(SearchTopHeadlinesNewsEvent(keyword: currentKeyword));
     });
   }
 }

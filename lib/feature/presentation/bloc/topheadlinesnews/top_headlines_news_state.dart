@@ -5,7 +5,7 @@ abstract class TopHeadlinesNewsState extends Equatable {
   const TopHeadlinesNewsState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class InitialTopHeadlinesNewsState extends TopHeadlinesNewsState {}
@@ -15,10 +15,10 @@ class LoadingTopHeadlinesNewsState extends TopHeadlinesNewsState {}
 class LoadedTopHeadlinesNewsState extends TopHeadlinesNewsState {
   final List<ItemArticleTopHeadlinesNewsResponseModel> listArticles;
 
-  LoadedTopHeadlinesNewsState({this.listArticles});
+  const LoadedTopHeadlinesNewsState({required this.listArticles});
 
   @override
-  List<Object> get props => [listArticles];
+  List<Object?> get props => [listArticles];
 
   @override
   String toString() {
@@ -27,12 +27,12 @@ class LoadedTopHeadlinesNewsState extends TopHeadlinesNewsState {
 }
 
 class FailureTopHeadlinesNewsState extends TopHeadlinesNewsState {
-  final String errorMessage;
+  final String? errorMessage;
 
-  FailureTopHeadlinesNewsState({this.errorMessage});
+  const FailureTopHeadlinesNewsState({required this.errorMessage});
 
   @override
-  List<Object> get props => [errorMessage];
+  List<Object?> get props => [errorMessage];
 
   @override
   String toString() {
@@ -43,10 +43,10 @@ class FailureTopHeadlinesNewsState extends TopHeadlinesNewsState {
 class ChangedCategoryTopHeadlinesNewsState extends TopHeadlinesNewsState {
   final int indexCategorySelected;
 
-  ChangedCategoryTopHeadlinesNewsState({this.indexCategorySelected});
+  const ChangedCategoryTopHeadlinesNewsState({required this.indexCategorySelected});
 
   @override
-  List<Object> get props => [indexCategorySelected];
+  List<Object?> get props => [indexCategorySelected];
 
   @override
   String toString() {
@@ -57,10 +57,10 @@ class ChangedCategoryTopHeadlinesNewsState extends TopHeadlinesNewsState {
 class SearchSuccessTopHeadlinesNewsState extends TopHeadlinesNewsState {
   final List<ItemArticleTopHeadlinesNewsResponseModel> listArticles;
 
-  SearchSuccessTopHeadlinesNewsState({this.listArticles});
+  const SearchSuccessTopHeadlinesNewsState({required this.listArticles});
 
   @override
-  List<Object> get props => [listArticles];
+  List<Object?> get props => [listArticles];
 
   @override
   String toString() {

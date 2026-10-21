@@ -1,15 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_news_app/core/error/failure.dart';
-import 'package:flutter_news_app/feature/domain/repository/news/news_repository.dart';
-import 'package:meta/meta.dart';
 import 'package:flutter_news_app/core/usecase/usecase.dart';
 import 'package:flutter_news_app/feature/data/model/topheadlinesnews/top_headlines_news_response_model.dart';
+import 'package:flutter_news_app/feature/domain/repository/news/news_repository.dart';
 
 class SearchTopHeadlinesNews implements UseCase<TopHeadlinesNewsResponseModel, ParamsSearchTopHeadlinesNews> {
   final NewsRepository newsRepository;
 
-  SearchTopHeadlinesNews({@required this.newsRepository});
+  SearchTopHeadlinesNews({required this.newsRepository});
 
   @override
   Future<Either<Failure, TopHeadlinesNewsResponseModel>> call(ParamsSearchTopHeadlinesNews params) async {
@@ -20,10 +19,10 @@ class SearchTopHeadlinesNews implements UseCase<TopHeadlinesNewsResponseModel, P
 class ParamsSearchTopHeadlinesNews extends Equatable {
   final String keyword;
 
-  ParamsSearchTopHeadlinesNews({@required this.keyword});
+  const ParamsSearchTopHeadlinesNews({required this.keyword});
 
   @override
-  List<Object> get props => [keyword];
+  List<Object?> get props => [keyword];
 
   @override
   String toString() {

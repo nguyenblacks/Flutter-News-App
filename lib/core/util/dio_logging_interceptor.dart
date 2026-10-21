@@ -1,51 +1,43 @@
+// ignore_for_file: avoid_print
 import 'package:dio/dio.dart';
 import 'package:flutter_news_app/config/flavor_config.dart';
 
-class DioLoggingInterceptor extends InterceptorsWrapper {
+class DioLoggingInterceptor extends Interceptor {
   @override
-  Future onRequest(RequestOptions options) async {
-    if (FlavorConfig.instance.flavor == Flavor.DEVELOPMENT) {
-      print("--> ${options.method != null ? options.method.toUpperCase() : 'METHOD'} ${"" + (options.baseUrl ?? "") + (options.path ?? "")}");
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    if (FlavorConfig.instance.flavor == Flavor.development) {
+      print("--> ${options.method.toUpperCase()} ${options.baseUrl}${options.path}");
       print('Headers:');
       options.headers.forEach((k, v) => print('$k: $v'));
-      if (options.queryParameters != null) {
-        print('queryParameters:');
-        options.queryParameters.forEach((k, v) => print('$k: $v'));
-      }
+      print('queryParameters:');
+      options.queryParameters.forEach((k, v) => print('$k: $v'));
       if (options.data != null) {
         print('Body: ${options.data}');
       }
-      print("--> END ${options.method != null ? options.method.toUpperCase() : 'METHOD'}");
+      print("--> END ${options.method.toUpperCase()}");
     }
-
-    // example for add header authorization
-    /*if (options.headers.containsKey(requiredToken)) {
-      options.headers.remove(requiredToken);
-      options.headers.addAll({'Authorization': 'Bearer $token'});
-    }*/
-    return options;
+    super.onRequest(options, handler);
   }
 
   @override
-  Future onResponse(Response response) {
-    if (FlavorConfig.instance.flavor == Flavor.DEVELOPMENT) {
-      print("<-- ${response.statusCode} ${(response.request != null ? (response.request.baseUrl + response.request.path) : 'URL')}");
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    if (FlavorConfig.instance.flavor == Flavor.development) {
+      print("<-- ${response.statusCode} ${response.requestOptions.baseUrl + response.requestOptions.path}");
       print('Headers:');
-      response.headers?.forEach((k, v) => print('$k: $v'));
+      response.headers.forEach((k, v) => print('$k: $v'));
       print('Response: ${response.data}');
       print('<-- END HTTP');
     }
-    return super.onResponse(response);
+    super.onResponse(response, handler);
   }
 
   @override
-  Future onError(DioError dioError) async {
-    if (FlavorConfig.instance.flavor == Flavor.DEVELOPMENT) {
-      print(
-          "<-- ${dioError.message} ${(dioError.response?.request != null ? (dioError.response.request.baseUrl + dioError.response.request.path) : 'URL')}");
-      print("${dioError.response != null ? dioError.response.data : 'Unknown Error'}");
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    if (FlavorConfig.instance.flavor == Flavor.development) {
+      print("<-- ${err.message} ${err.requestOptions.baseUrl + err.requestOptions.path}");
+      print("${err.response != null ? err.response?.data : 'Unknown Error'}");
       print('<-- End error');
     }
-    return super.onError(dioError);
+    super.onError(err, handler);
   }
 }
