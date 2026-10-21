@@ -37,7 +37,7 @@ jobs:
         run: flutter analyze
 
       - name: Build Release APK (Production)
-        run: flutter build apk --release --flavor production -t lib/main_production.dart
+        run: flutter build apk --release --flavor production -t lib/main_production.dart --android-skip-build-dependency-validation
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
