@@ -140,9 +140,15 @@ class _SearchPageState extends State<SearchPage> {
                                 padding: EdgeInsets.zero,
                                 itemBuilder: (context, index) {
                                   var itemArticle = listArticles[index];
-                                  var dateTimePublishedAt =
-                                      DateFormat('yyyy-MM-ddTHH:mm:ssZ').parse(itemArticle.publishedAt, true);
-                                  var strPublishedAt = DateFormat('MMM dd, yyyy HH:mm').format(dateTimePublishedAt);
+                                  String strPublishedAt;
+                                  try {
+                                    final dt = DateTime.parse(itemArticle.publishedAt).toLocal();
+                                    strPublishedAt = DateFormat('MMM dd, yyyy HH:mm').format(dt);
+                                  } catch (_) {
+                                    strPublishedAt = itemArticle.publishedAt.isNotEmpty
+                                        ? itemArticle.publishedAt
+                                        : DateFormat('MMM dd, yyyy HH:mm').format(DateTime.now());
+                                  }
                                   return Padding(
                                     padding: EdgeInsets.symmetric(vertical: 16.h),
                                     child: WidgetItemNews(

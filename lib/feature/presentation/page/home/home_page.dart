@@ -166,6 +166,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  String _formatPublishedDate(String publishedAt) {
+    try {
+      final dt = DateTime.parse(publishedAt).toLocal();
+      return DateFormat('MMM dd, yyyy HH:mm').format(dt);
+    } catch (_) {
+      return publishedAt.isNotEmpty ? publishedAt : DateFormat('MMM dd, yyyy HH:mm').format(DateTime.now());
+    }
+  }
+
   void _resetRefreshIndicator() {
     if (isLoadingCenterIOS) {
       isLoadingCenterIOS = false;
@@ -208,9 +217,7 @@ class _HomePageState extends State<HomePage> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         var itemArticle = listArticles[index];
-                        var dateTimePublishedAt =
-                            DateFormat('yyyy-MM-ddTHH:mm:ssZ').parse(itemArticle.publishedAt, true);
-                        var strPublishedAt = DateFormat('MMM dd, yyyy HH:mm').format(dateTimePublishedAt);
+                        var strPublishedAt = _formatPublishedDate(itemArticle.publishedAt);
                         if (index == 0) {
                           return _buildWidgetItemLatestNews(itemArticle, strPublishedAt);
                         } else {
@@ -253,8 +260,7 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.symmetric(horizontal: 48.w),
                 itemBuilder: (context, index) {
                   var itemArticle = listArticles[index];
-                  var dateTimePublishedAt = DateFormat('yyyy-MM-ddTHH:mm:ssZ').parse(itemArticle.publishedAt, true);
-                  var strPublishedAt = DateFormat('MMM dd, yyyy HH:mm').format(dateTimePublishedAt);
+                  var strPublishedAt = _formatPublishedDate(itemArticle.publishedAt);
                   if (index == 0) {
                     return _buildWidgetItemLatestNews(itemArticle, strPublishedAt);
                   } else {
