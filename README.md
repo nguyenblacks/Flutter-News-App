@@ -1,85 +1,91 @@
-[![Codemagic build status](https://api.codemagic.io/apps/5e93249b1838ac3d3e52a5bc/5e93249b1838ac3d3e52a5bb/status_badge.svg)](https://codemagic.io/apps/5e93249b1838ac3d3e52a5bc/5e93249b1838ac3d3e52a5bb/latest_build)
-[![codecov](https://codecov.io/gh/CoderJava/Flutter-News-App/branch/dev-v2.0.0/graph/badge.svg)](https://codecov.io/gh/CoderJava/Flutter-News-App)
-[![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
-[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+# Swavoti News 📰
 
-![Flutter News App](https://github.com/CoderJava/Flutter-News-App/blob/master/screenshots/social%20media%20preview.png)
+A modern, fast, and elegant news application built with **Flutter 3**, **Dart 3 (Sound Null Safety)**, and **Material 3**. Powered by live **Google News RSS feeds** requiring zero API keys.
 
-# Flutter News App
-News App developed with Flutter and API from [News API](https://newsapi.org)
+---
 
-## Versions
-- [v1.0.0](https://github.com/CoderJava/Flutter-News-App/tree/v1.0.0)
-- [v2.0.0](https://github.com/CoderJava/Flutter-News-App/tree/v2.0.0)
-- v3.0.0 under development. You can check the progress [in here](https://trello.com/b/5whQTw74/flutter-news-app-v3)
+## ✨ Features
 
-## Usage
-1. Please open file **constant_config.dart** and change `YOUR API KEY` in the variable `keyNewsApi` with your own.
-2. In development mode, I'm used fake json server. So, the data is not realtime. 
-3. Build flavor only work for Android. So, if you want to run as development mode you can use this command.
-```
-flutter run -t lib/main_development.dart --flavor development -d <device_id>
-```
-or in production mode.
-```
-flutter run --release -t lib/main_production.dart --flavor production -d <device_id>
-```
-*Note: If you want to build and release this app to Play Store. Please use this command.*
-```
-flutter build appbundle --release --flavor production -t lib/main_production.dart
-```
-4. For iOS, you can use this command as development mode.
-```
-flutter run -t lib/main_development.dart -d <device_id>
-```
-or in production mode.
-```
-flutter run --release -t lib/main_production.dart -d <device_id>
-```
-For iOS, to build and release there is no configuration. Just follow the instructions from the [documentation](https://flutter.dev/docs/deployment/ios).
+- ⚡ **Live Realtime News**: Directly streams up-to-the-minute global headlines via Google News RSS feeds.
+- 🗂 **Categorized Feeds**: Instant filtering across **Business**, **Technology**, **Entertainment**, **Health**, **Science**, and **Sports**.
+- 🔍 **Realtime Search**: Search across topics and global events instantly.
+- 🌓 **Theme Modes**: Seamless Dark & Light theme support with Material 3 styling, persisted locally with **Hive**.
+- 📱 **Adaptive UI**: Responsive layouts powered by `flutter_screenutil` tailored for all screen sizes.
+- 🚀 **Automated CI/CD**: Pre-configured **GitHub Actions** workflow that builds and archives release-ready Android APKs.
 
-## Feature
-- [X] List daily news.
-- [X] Filter daily news by category.
-- [X] Refresh list daily news with pull to refresh style.
-- [X] Go to detail news website.
-- [X] Search news.
-- [X] Dark mode support.
+---
 
-## Technology
-1. Dio<br />
-A powerful Http client for Dart, which supports interceptors, FormData, Request Cancellation, File Downloading, Timeout, etc.
-2. Flutter BLoC<br />
-Flutter widgets that make it easy to implement the BLoC design pattern.
-3. Intl<br />
-Package providers internationalization and localization facilities, including message translation, plurals and genders, date/number formatting and parsing, and bidirectional text.
-4. Url Launcher<br />
-Flutter plugin for launching a URL in the mobile platform. Supports iOS and Android.
-5. Cached Network Image<br />
-Flutter library to load and cache network images. Can also be used with placeholder and error widgets.
-6. Get It<br />
-Simple direct Service Locator that allows to decouple the interface from a concrete implementation and to access the concrete implementation from everywhere in your App.
-7. Dartz<br />
-Functional Programming in Dart. Purify your Dart code using efficient immutable data structures, monads, lenses and other FP tools.
-8. Equatable<br />
-An abstract class that helps to implement equality without needing to explicitly override == and hashCode.
-9. Data Connection Checker<br />
-A pure Dart library that checks for internet by opening a socket to a list of specified addresses, each with individual port and timeout.
-10. Flutter ScreenUtil<br />
-A Flutter plugin for adapting screen and font size.
-11. Pedantic<br />
-How to get the most value from Dart static analysis.
-12. Device Info<br />
-Flutter plugin providing detailed information about the device (make, model, etc).
-13. Flutter SVG<br />
-An SVG rendering and widget library for Flutter, which allows painting and displaying Scalable Vector Graphics 1.1 files.
-14. Build Runner<br />
-Tools to write binaries that run builders.
-15. Mockito<br />
-A mock framework inspired by Mockito.
-16. Bloc Test<br />
-A testing library which makes it easy to test blocs.
-17. JSON Serializable<br />
-Automatically generate code for converting to and from JSON by annotating Dart classes.
-18. Hive<br />
-Lightweight and blazing fast key-value database written in pure Dart.
+## 🏛 Architecture & Tech Stack
+
+This project follows Clean Architecture with separation of concerns:
+
+- **State Management**: [`flutter_bloc`](https://pub.dev/packages/flutter_bloc) (Event-driven state handling)
+- **Networking**: [`dio`](https://pub.dev/packages/dio) with custom interceptors and XML parsing
+- **Dependency Injection**: [`get_it`](https://pub.dev/packages/get_it) service locator
+- **Local Persistence**: [`hive`](https://pub.dev/packages/hive) & [`hive_flutter`](https://pub.dev/packages/hive_flutter)
+- **Responsive Layout**: [`flutter_screenutil`](https://pub.dev/packages/flutter_screenutil)
+- **Image Caching**: [`cached_network_image`](https://pub.dev/packages/cached_network_image)
+- **External Links**: [`url_launcher`](https://pub.dev/packages/url_launcher)
+- **Connectivity**: [`internet_connection_checker_plus`](https://pub.dev/packages/internet_connection_checker_plus)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Flutter SDK `^3.47.0` (or latest stable)
+- Dart SDK `^3.10.0`
+- Android Studio / VS Code
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/nguyenblacks/Flutter-News-App.git
+   cd Flutter-News-App
+   ```
+
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+
+3. Run the application:
+   - **Production Flavor**:
+     ```bash
+     flutter run -t lib/main_production.dart --flavor production
+     ```
+   - **Development Flavor**:
+     ```bash
+     flutter run -t lib/main_development.dart --flavor development
+     ```
+
+---
+
+## 📦 Building Release APK
+
+To build a release APK locally or via CI:
+
+```bash
+flutter build apk --release --flavor production -t lib/main_production.dart --android-skip-build-dependency-validation
+```
+
+The output APK will be generated at:
+`build/app/outputs/flutter-apk/app-production-release.apk`
+
+---
+
+## 🤖 CI / CD Pipeline
+
+The repository includes a GitHub Actions workflow at [`.github/workflows/build_apk.yml`](.github/workflows/build_apk.yml) that automatically:
+1. Sets up Java 17 and Flutter.
+2. Runs static code analysis (`flutter analyze`).
+3. Compiles the release production APK.
+4. Uploads the built APK as a downloadable artifact.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).

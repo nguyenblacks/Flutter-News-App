@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_news_app/feature/data/model/topheadlinesnews/top_headlines_news_response_model.dart';
+import 'package:flutter_news_app/feature/presentation/page/articleview/articleview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class WidgetItemNews extends StatelessWidget {
   final ItemArticleTopHeadlinesNewsResponseModel itemArticle;
@@ -17,16 +17,21 @@ class WidgetItemNews extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        final uri = Uri.tryParse(itemArticle.url);
-        if (uri != null && await canLaunchUrl(uri)) {
-          await launchUrl(uri);
+      onTap: () {
+        if (itemArticle.url.isNotEmpty) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ArticleView(
+                url: itemArticle.url,
+                title: itemArticle.title,
+              ),
+            ),
+          );
         } else {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Couldn\'t open detail news'),
-            ));
-          }
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Couldn\'t open detail news'),
+          ));
         }
       },
       child: SizedBox(

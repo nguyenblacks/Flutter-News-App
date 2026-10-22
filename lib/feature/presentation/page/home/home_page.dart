@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_news_app/feature/data/model/categorynews/category_news_model.dart';
 import 'package:flutter_news_app/feature/data/model/topheadlinesnews/top_headlines_news_response_model.dart';
 import 'package:flutter_news_app/feature/presentation/bloc/topheadlinesnews/bloc.dart';
+import 'package:flutter_news_app/feature/presentation/page/articleview/articleview.dart';
 import 'package:flutter_news_app/feature/presentation/page/search/search_page.dart';
 import 'package:flutter_news_app/feature/presentation/page/settings/settings_page.dart';
 import 'package:flutter_news_app/feature/presentation/widget/widget_failure_message.dart';
@@ -15,7 +16,6 @@ import 'package:flutter_news_app/injection_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -106,9 +106,10 @@ class _HomePageState extends State<HomePage> {
                               children: <Widget>[
                                 Expanded(
                                   child: Text(
-                                    'Daily News',
+                                    'Swavoti News',
                                     style: TextStyle(
                                       fontSize: 48.sp,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -332,10 +333,17 @@ class _HomePageState extends State<HomePage> {
     String strPublishedAt,
   ) {
     return GestureDetector(
-      onTap: () async {
-        final uri = Uri.tryParse(itemArticle.url);
-        if (uri != null && await canLaunchUrl(uri)) {
-          await launchUrl(uri);
+      onTap: () {
+        if (itemArticle.url.isNotEmpty) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ArticleView(
+                url: itemArticle.url,
+                title: itemArticle.title,
+              ),
+            ),
+          );
         } else {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

@@ -25,6 +25,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   json_annotation: ^4.9.0
+  webview_flutter: ^4.14.1
 
 dev_dependencies:
   flutter_test:
@@ -35,6 +36,15 @@ dev_dependencies:
   bloc_test: ^9.1.7
   json_serializable: ^6.8.0
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/app_icon_fullbleed.jpg"
+  adaptive_icon_background: "#0c1427"
+  adaptive_icon_foreground: "assets/icon/app_icon_fullbleed.jpg"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true
@@ -42,3 +52,4 @@ flutter:
   assets:
     - assets/images/
     - assets/svg/
+    - assets/icon/
